@@ -1,17 +1,21 @@
 from kbbi import KBBI, TidakDitemukan
 from json import dumps
 from flask import Flask, jsonify, request
+from dotenv import load_dotenv
+from os import getenv
 
+load_dotenv()
 app = Flask(__name__)
 
 @app.route("/search", methods=["POST"])
 def search():
     try:
-        word = request.get_json()["word"]
+        body = request.get_json()
+        word = "" if "kata" not in body else body["kata"]
 
-        if word is None:
+        if word is None or word is "":
             return jsonify({
-                "message": "word is required in body"
+                "message": "kata harus di isi"
             }), 422
 
         kbbiWord: KBBI = KBBI(word)
@@ -25,4 +29,4 @@ def search():
 def not_found(error):
     return jsonify({ "message": "resource not found" }), 404
 
-app.run("0.0.0.0", 8000, True)
+app.run("0.0.0.0", getenv("APP_PORT"), getenv("APP_DEBUG") is "true")
