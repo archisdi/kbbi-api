@@ -1,10 +1,7 @@
 from kbbi import KBBI, TidakDitemukan
 from json import dumps
 from flask import Flask, jsonify, request
-from dotenv import load_dotenv
-from os import getenv
 
-load_dotenv()
 app = Flask(__name__)
 
 @app.route("/search", methods=["POST"])
@@ -28,11 +25,3 @@ def search():
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({ "message": "resource not found" }), 404
-
-# Main
-if __name__ == "__main__":
-    app.run(
-        host = "0.0.0.0", 
-        port = getenv("APP_PORT"), 
-        debug = getenv("APP_DEBUG") is "true"
-    )

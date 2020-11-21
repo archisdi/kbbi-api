@@ -1,3 +1,4 @@
 Flask
 kbbi
 python-dotenv
+gunicorn
