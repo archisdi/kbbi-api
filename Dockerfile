@@ -6,4 +6,4 @@ COPY . .
 
 RUN "bin/setup"
 
-ENTRYPOINT [ "python", "main.py" ]
+ENTRYPOINT [ "python", "wsgi.py" ]
