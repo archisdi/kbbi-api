@@ -14,14 +14,15 @@ def search():
     try:
         body = request.get_json()
         word = "" if "kata" not in body else body["kata"]
-
         if word == None or word == "":
             return response("kata harus di isi", 422)
 
         kbbiWord: KBBI = KBBI(word)
         return response(kbbiWord.serialisasi(), 200)
+
     except TidakDitemukan:
         return response("kata tidak ditemukan", 404)
+        
     except:
         return response("terjadi kesalahan pada server", 500)
 
