@@ -13,20 +13,26 @@ def search():
         body = request.get_json()
         word = "" if "kata" not in body else body["kata"]
 
-        if word is None or word is "":
+        if word == None or word == "":
             return jsonify({
                 "message": "kata harus di isi"
             }), 422
 
         kbbiWord: KBBI = KBBI(word)
-        return jsonify(kbbiWord.serialisasi())
+        return jsonify(kbbiWord.serialisasi()), 200
     except TidakDitemukan as err:
         return jsonify({
             "message": "kata tidak ditemukan"
-        })
+        }), 404
 
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({ "message": "resource not found" }), 404
 
-app.run("0.0.0.0", getenv("APP_PORT"), getenv("APP_DEBUG") is "true")
+# Main
+if __name__ == "__main__":
+    app.run(
+        host = "0.0.0.0", 
+        port = getenv("APP_PORT"), 
+        debug = getenv("APP_DEBUG") is "true"
+    )
