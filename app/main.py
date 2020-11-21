@@ -4,6 +4,11 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+def response(message: str, code: int = 200) -> dict:
+    return jsonify({
+        "message": message
+    }), code
+
 @app.route("/search", methods=["POST"])
 def search():
     try:
@@ -11,17 +16,15 @@ def search():
         word = "" if "kata" not in body else body["kata"]
 
         if word == None or word == "":
-            return jsonify({
-                "message": "kata harus di isi"
-            }), 422
+            return response("kata harus di isi", 422)
 
         kbbiWord: KBBI = KBBI(word)
-        return jsonify(kbbiWord.serialisasi()), 200
-    except TidakDitemukan as err:
-        return jsonify({
-            "message": "kata tidak ditemukan"
-        }), 404
+        return response(kbbiWord.serialisasi(), 200)
+    except TidakDitemukan:
+        return response("kata tidak ditemukan", 404)
+    except:
+        return response("terjadi kesalahan pada server", 500)
 
 @app.errorhandler(404)
 def not_found(error):
-    return jsonify({ "message": "resource not found" }), 404
+    return response("rute tidak ditemukan", 404)
